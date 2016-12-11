@@ -1,0 +1,90 @@
+import java.io.IOException;
+import java.util.Scanner;
+
+
+public class RR 
+{
+	static int jobs = 4; //change n if you want to change the number of jobs/processes
+	static int data[][] = new int[jobs+1][4];//we use multidimensional array to manipulate two arrays at the same time
+	
+	public static void Calculate_TurnAroundTime(){
+		//initialize variables
+		 int time = 0;
+		 float turn_Around_Time = 0;
+	     int current_Time_Slice = 0;
+	     int next = 1;
+	     int time_Slice = 5; //time_Slices: change according to how long you want the time slices to be 
+		 
+	     for(int i=1;i<=jobs;i++) // Loop 1
+	     {
+	    	 time += data[i][1]; 
+	     }							//end of loop 1
+
+		 for(int i=0;i<time;i++) //Loop 2
+		 {
+			  data[next][1]--;// decrement
+		      //turn around time calculations 
+		      for(int k=1;k<=jobs;k++) // Loop 3 (jobs being the number of processes)
+		      {
+		    	  if(data[k][1] != 0)
+		    	  {
+		    		  data[k][3]++;// if process is completed, increment 1
+		    		  if(k != next)
+		    		  {
+		    		  data[k][2]++; 
+		    		  }
+		    	  }
+		    	  else if (k == next)
+		    	  {
+		    		  data[k][3]++;
+		    	  }
+		      }//end of loop 3
+		      current_Time_Slice++;
+		     
+		      if(current_Time_Slice == time_Slice || data[next][1] == 0)//If Time slice has expired or the current process has completed execution
+		      {
+		       current_Time_Slice = 0;
+		       //
+		       		for(int j = 1; j <= jobs; j++) //Loop 4
+		       		{
+		       			next++;
+		       			if(next == (jobs + 1))
+		       			{
+		       				next = 1;
+		       			}
+		       			if(data[next][1] != 0)
+		       			{	
+		       				break;
+		       			}
+		       		}							//Ending of loop 4
+		      	}
+		      }//ending of loop 2
+		     //print for turn around time
+		 	 
+		     for(int i=1;i<= jobs;i++) //Loop 5
+		     {
+		    	 turn_Around_Time += data[i][3]; 
+		     }						 //Ending of loop 5
+		     turn_Around_Time /= jobs; //divide by number of processes
+
+		     System.out.println("Average Turn around time: " + turn_Around_Time + "ms");
+		 }
+	
+	 
+		 
+	 
+	     
+	public static void main(String args[]) throws IOException
+	{
+			
+			Scanner sc = new Scanner(System.in);
+		    for(int i=1;i<=jobs;i++) //until number of processes 
+		    {
+		    	System.out.println("Enter the Burst Time for process " + i + ": ");
+		    	data[i][1] = sc.nextInt(); 
+		    }
+		    Calculate_TurnAroundTime();
+		     
+		}
+
+}
